@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-
 /* Import Components */
-import CheckBox from "../components/CheckBox";
 import Input from "../components/Input";
 import TextArea from "../components/TextArea";
-import Select from "../components/Select";
 import Button from "../components/Button";
 
 class FormContainer extends Component {
@@ -13,48 +10,20 @@ class FormContainer extends Component {
 
     this.state = {
       newUser: {
-        FirstName: "jkj",
-        LastName: "kjk",
-        Email: "ioii",
-        Phone: "nkn",
-        Birth: "nkn",
-        Address: "jkjk"
+        FirstName: "",
+        LastName: "",
+        Email: "",
+        Phone: "",
+        Birth: "",
+        Address: ""
       },
     };
     this.handleTextArea = this.handleTextArea.bind(this);
-    this.handleAge = this.handleAge.bind(this);
-    this.handleFullName = this.handleFullName.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleInput = this.handleInput.bind(this);
   }
 
   /* This lifecycle hook gets executed when the component mounts */
-
-  handleFullName(e) {
-    let value = e.target.value;
-    this.setState(
-      prevState => ({
-        newUser: {
-          ...prevState.newUser,
-          FirstName: value
-        }
-      }),
-      () => console.log(this.state.newUser)
-    );
-  }
-
-  handleAge(e) {
-    let value = e.target.value;
-    this.setState(
-      prevState => ({
-        newUser: {
-          ...prevState.newUser,
-          age: value
-        }
-      }),
-      () => console.log(this.state.newUser)
-    );
-  }
 
   handleInput(e) {
     let value = e.target.value;
@@ -84,29 +53,27 @@ class FormContainer extends Component {
     );
   }
 
-  handleCheckBox(e) {
-    const newSelection = e.target.value;
-    let newSelectionArray;
-
-    if (this.state.newUser.skills.indexOf(newSelection) > -1) {
-      newSelectionArray = this.state.newUser.skills.filter(
-        s => s !== newSelection
-      );
-    } else {
-      newSelectionArray = [...this.state.newUser.skills, newSelection];
-    }
-
-    this.setState(prevState => ({
-      newUser: { ...prevState.newUser, skills: newSelectionArray }
-    }));
+  handleClearForm(e) {
+    e.preventDefault();
+    this.setState({
+      newUser: {
+        FirstName: "",
+        LastName: "",
+        Email: "",
+        Phone: "",
+        Birth: "",
+        Address: ""
+      },
+    });
   }
+
 
   handleFormSubmit(e) {
     e.preventDefault();
     let userData = this.state.newUser;
     const qs = require('qs');
     let bodyData = qs.stringify(userData);
-    console.log("test",bodyData)
+    //console.log("test",bodyData)
 
     fetch("http://localhost:5001/Applicants", {
       mode: "no-cors",
@@ -121,16 +88,31 @@ class FormContainer extends Component {
       }
     }).then(response => {
       console.log(response)
+      e.preventDefault();
+        this.setState({
+          newUser: {
+            FirstName: "",
+            LastName: "",
+            Email: "",
+            Phone: "",
+            Birth: "",
+            Address: ""
+          },
+      });
+      alert("Thank you:) Infomation recorded")
     })
-      .then(data => {
+     /* .then(data => {
         console.log("Successful" + data);
       });
-
+*/
   }
+
+  
+
 
   render() {
     return (
-      <form className="container-fluid" onSubmit={this.handleFormSubmit}>
+      <form className="container-fluid" onSubmit={this.handleFormSubmit} s>
         <Input
           inputType={"text"}
           title={"First Name"}
@@ -160,19 +142,19 @@ class FormContainer extends Component {
         {/* Name of the user */}
         <Input
           inputType={"text"}
-          title={"Phone"}
+          title={"Phone  -  'xxx-xxx-xxxx'"}
           name={"Phone"}
           value={this.state.newUser.Phone}
-          placeholder={"Enter your Phone"}
+          placeholder={"Enter your Phone -- (Format: '732-640-0000'"}
           handleChange={this.handleInput}
         />{" "}
         {/* Name of the user */}
         <Input
           inputType={"text"}
-          title={"Birth"}
+          title={"Birth - 'year-month-day'"}
           name={"Birth"}
           value={this.state.newUser.Birth}
-          placeholder={"Enter your Birth"}
+          placeholder={"Enter your Birth -- (Format: '1996-01-01'"}
           handleChange={this.handleInput}
         />{" "}
         {/* Name of the user */}
@@ -192,12 +174,10 @@ class FormContainer extends Component {
           style={buttonStyle}
         />{" "}
         {/*Submit */}
-
       </form>
     );
   }
 }
-
 const buttonStyle = {
   margin: "10px 10px 10px 10px"
 };

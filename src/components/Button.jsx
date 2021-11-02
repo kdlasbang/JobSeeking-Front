@@ -10,6 +10,7 @@ const Button = props => {
       }
       onClick={props.action}
     >
+      
       {props.title}
     </button>
   );
